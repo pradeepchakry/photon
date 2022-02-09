@@ -1,8 +1,7 @@
-com/b3soft/photon/MainClass.class
 com/b3soft/photon/Demo.class
 com/b3soft/photon/ServerInstance.class
 com/b3soft/photon/Sorting.class
-com/b3soft/photon/HelloWorld.class
 com/b3soft/photon/ServerStarter.class
 com/b3soft/photon/SampleService.class
 com/b3soft/photon/ServerThread.class
+com/b3soft/photon/GenericLibrary.class

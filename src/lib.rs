@@ -1,10 +1,14 @@
 use jni::JNIEnv;
-use jni::objects::{JClass, JString};
+use jni::objects::{JClass, JString, JObject};
 use jni::sys::jstring;
+use jni::sys::jint;
+use jni::sys::jbyteArray;
 use std::io::prelude::*;
 use std::net::TcpListener;
 use std::net::TcpStream;
 use std::fs;
+use std::mem::size_of_val;
+use std::marker::Copy;
 
 
 #[no_mangle]
@@ -62,6 +66,38 @@ pub  extern "system" fn Java_com_b3soft_photon_ServerInstance_startServer(
         output.into_inner()
 }
 
+#[no_mangle]
+pub extern "system" fn Java_com_b3soft_photon_GenericLibrary_sortGivenArray(env: JNIEnv,
+                                             class: JClass,
+                                             input: jbyteArray)
+                                             -> jbyteArray {
+
+    let arr: & [u8] = &JNIEnv::convert_byte_array(&env, input).unwrap();
+    
+    let l = 0;
+    let h = arr.len();
+
+    let mut elementVec: Vec<u8> = Vec::new();
+
+    println!("Array received at Rust: ");
+    for a in arr.iter() {
+        elementVec.push(*a);
+        println!("{} ", a);
+    }
+
+    let res = sortArray(& mut elementVec);
+
+    println!("Array sorted: ");
+    for r in res.iter() {
+        println!("{} ", r);
+    }
+
+    let output = env.new_string(format!("Hello"))
+        .expect("Couldn't create java string!");
+
+    output.into_inner()
+}
+
 fn handle_connection(mut stream: TcpStream) {
     let mut buffer = [0; 1024];
     stream.read(&mut buffer).unwrap();
@@ -93,4 +129,58 @@ fn handle_connection(mut stream: TcpStream) {
 
     stream.write(response.as_bytes()).unwrap();
     stream.flush().unwrap();
+}
+
+fn sortArray(arr: & mut Vec<u8>) -> &mut [u8] {
+
+    let mut l: usize = 0;
+    let mut h: usize = arr.len() - 1;
+
+    quickSort(arr, l, h);
+    
+    return arr;
+}
+
+fn partition(arr: &mut[u8], l: usize, h: usize) -> u8 {
+
+    let mut i = l + 1;
+    let mut j = h;
+    let mut c = l;
+
+    while i <= j {
+        while i <= h && arr[i] < arr[c] {
+            i = i + 1;
+        }
+
+        while arr[j] > arr[c] && j > l {
+            j = j - 1;
+        }
+
+        if i < j {
+            let temp = arr[i];
+            arr[i] = arr[j];
+            arr[j] = temp;
+        } else {
+            break;
+        }
+    }
+
+    let temp = arr[l];
+    arr[l] = arr[j];
+    arr[j] = temp;
+
+    return j as u8;
+}
+
+fn quickSort(arr: & mut Vec<u8>, l: usize, h: usize) {
+    let mut j = 0;
+
+    if l < h {
+        
+        j = partition(arr, l, h);
+
+        quickSort(arr, l, (j - 1) as usize);
+        quickSort(arr, (j + 1) as usize, h);
+    }
+
 }
