@@ -92,10 +92,8 @@ pub extern "system" fn Java_com_b3soft_photon_GenericLibrary_sortGivenArray(env:
         println!("{} ", r);
     }
 
-    let output = env.new_string(format!("Hello"))
-        .expect("Couldn't create java string!");
-
-    output.into_inner()
+    let jRes = env.byte_array_from_slice(res).expect("Could Couldn't create java byte Array");
+    jRes
 }
 
 fn handle_connection(mut stream: TcpStream) {

@@ -3,9 +3,9 @@ package com.b3soft.photon;
 public class Sorting {
 
     public static void main(String[] args) {
-        int[] a = {6, 1, 3, 9, 15, 4, 10};
-        int l = 0;
-        int h = a.length - 1;
+        byte[] a = {6, 1, 3, 9, 15, 4, 10};
+        byte l = 0;
+        byte h = (byte) ((a.length) - 1);
         quickSort(a, l, h);
 
         for ( int i = 0; i < a.length; i++ ) {
@@ -13,11 +13,11 @@ public class Sorting {
         }
     }
 
-    public static int partition(int a[], int l, int h) {
-        int i = l + 1;
-        int j = h;
-        int c = l;
-        int temp;
+    public static int partition(byte a[], byte l, byte h) {
+        byte i = (byte) (l + 1);
+        byte j = h;
+        byte c = l;
+        byte temp;
 
         while (i <= j) {
             while ( i <= h && a[i] < a[c] ) {
@@ -42,12 +42,13 @@ public class Sorting {
         return j;
     }
 
-    public static void quickSort(int[] a, int l, int h) {
+    public static byte[] quickSort(byte[] a, byte l, byte h) {
         int j = 0;
         if ( l < h ) {
             j = partition(a, l, h);
-            quickSort(a, l, j - 1);
-            quickSort(a,j + 1, h);
+            quickSort(a, l, (byte) (j - 1));
+            quickSort(a, (byte) (j + 1), h);
         }
+        return a;
     }
 }
